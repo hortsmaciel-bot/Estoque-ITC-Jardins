@@ -1,0 +1,4 @@
+# Netlify — Estoque do Cadaver Lab (ITC Jardins)
+# Site 100% estático: sem build e sem funções. Login e dados ficam no Supabase.
+[build]
+  publish = "public"
