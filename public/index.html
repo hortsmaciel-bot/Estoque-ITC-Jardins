@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Estoque Cadaver Lab ITC</title>
 <link rel="icon" type="image/png" href="favicon.png">
+<script>try{var t=localStorage.getItem("itc-tema");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Public+Sans:wght@400;500;600;700&display=swap">
@@ -54,7 +55,8 @@ body.locked .top,body.locked main{display:none}
 .login-card h1{font-size:22px;font-weight:800;font-stretch:112%;text-align:center}
 .login-card p{margin:-6px 0 6px;color:var(--muted);text-align:center;font-size:13px}
 .login-card .btn{justify-content:center;padding:10px 12px;font-size:14px}
-.err{color:var(--crit);font-size:13px;font-weight:600}
+.err{color:var(--crit);font-size:13px;font-weight:600;background:var(--crit-soft);padding:10px 12px;border-radius:8px}
+.okbox{color:var(--ink);font-size:13px;background:var(--ok-soft);border:1px solid var(--ok);padding:10px 12px;border-radius:8px;line-height:1.5}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 .num,td.n,th.n{font-variant-numeric:tabular-nums}
@@ -70,6 +72,11 @@ a{color:var(--accent)}
 .brand-txt{display:flex;flex-direction:column;border-left:1px solid var(--line-2);padding-left:16px}
 .brand-txt b{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:18px;letter-spacing:.01em;line-height:1.1}
 .brand-txt span{color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.theme-btn{display:inline-flex;align-items:center;gap:6px}
+.theme-btn svg{width:16px;height:16px;flex:none}
+.login-card{position:relative;padding-top:48px}
+.login-card .theme-btn{position:absolute;top:10px;right:10px}
+@media (max-width:560px){.top .theme-lbl{display:none}}
 .sync{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
 .dot.on{background:var(--ok)} .dot.off{background:var(--warn)}
@@ -226,13 +233,13 @@ svg.chart .base{stroke:var(--line-2);stroke-width:1}
 </head>
 <body class="locked">
 <div id="login" class="login" hidden>
- <form id="login-form" class="login-card" autocomplete="on">
+ <form id="login-form" class="login-card" autocomplete="on"><button type="button" class="btn sm ghost theme-btn" data-act="theme" title="Alternar tema claro/escuro"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="theme-lbl">Tema escuro</span></button>
   <img class="logo logo-l" src="logo-claro.png" alt="ITC – Instituto de Treinamento em Cadáveres"><img class="logo logo-d" src="logo-escuro.png" alt="ITC – Instituto de Treinamento em Cadáveres">
   <h1 id="login-title">Estoque do Cadaver Lab</h1><p id="login-sub">Acesso restrito à equipe do ITC Jardins.</p>
   <div class="f" id="f-email"><label for="em">E-mail</label><input class="inp" type="email" id="em" name="email" autocomplete="username" required></div>
   <div class="f" id="f-pw"><label for="pw">Senha</label><input class="inp" type="password" id="pw" name="password" autocomplete="current-password" required minlength="6"></div>
   <div class="f" id="f-pw2" hidden><label for="pw2">Repita a nova senha</label><input class="inp" type="password" id="pw2" name="password2" autocomplete="new-password" minlength="8"></div>
-  <div id="login-err" class="err" hidden></div><div id="login-ok" class="muted" style="font-size:13px" hidden></div>
+  <div id="login-err" class="err" hidden></div><div id="login-ok" class="okbox" role="status" hidden></div>
   <button type="submit" class="btn pri" id="login-btn">Entrar</button>
   <button type="button" class="btn ghost sm" id="login-alt" data-act="login-mode" data-k="forgot">Esqueci minha senha</button>
  </form>
@@ -244,7 +251,7 @@ svg.chart .base{stroke:var(--line-2);stroke-width:1}
       <img class="logo logo-l" src="logo-claro.png" alt="ITC – Instituto de Treinamento em Cadáveres">
       <img class="logo logo-d" src="logo-escuro.png" alt="ITC – Instituto de Treinamento em Cadáveres">
       <div class="brand-txt"><b>Cadaver Lab · Jardins</b><span>Controle de insumos e instrumentais</span></div>
-      <div class="sync"><span id="sync" class="row"><span class="dot"></span><span>Conectando…</span></span><button class="btn sm ghost" data-act="logout">Sair</button></div>
+      <div class="sync"><span id="sync" class="row"><span class="dot"></span><span>Conectando…</span></span><button class="btn sm ghost theme-btn" data-act="theme" title="Alternar tema claro/escuro"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="theme-lbl">Tema escuro</span></button><button class="btn sm ghost" data-act="my-pass">Minha senha</button><button class="btn sm ghost" data-act="logout">Sair</button></div>
     </div>
     <nav class="tabs" id="tabs" role="tablist"></nav>
   </div>
@@ -318,7 +325,7 @@ function clean(o){const c={...o};delete c.id;return c}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const CFG=window.ITC_CONFIG||{};
 const cfgOk=!!(CFG.supabaseUrl&&CFG.supabaseAnonKey&&!/SEU-PROJETO|COLE-AQUI/.test(CFG.supabaseUrl+CFG.supabaseAnonKey));
-const sb=(cfgOk&&window.supabase)?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+const sb=(cfgOk&&window.supabase)?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:"implicit"}}):null;
 const COLS=["items","eventos","movs","listas"];
 function errOf(e){ // normaliza erros do Supabase
   if(!e) return {kind:"net",message:"Sem conexão."};
@@ -951,6 +958,8 @@ document.addEventListener("click",async ev=>{
     case "retry": start(); break;
     case "logout": if(Q.length||flushP){toast("Aguarde: ainda há alterações sendo salvas.");break} unsubscribeLive(); try{await sb.auth.signOut()}catch(e){} S.mode="loading"; S.items={};S.eventos={};S.movs={};S.listas={}; showLogin(); break;
     case "login-mode": setLoginMode(b.dataset.k); break;
+    case "theme": toggleTheme(); break;
+    case "my-pass": openModal(`<form id="pass-form"><div class="modal-h"><h2>Alterar minha senha</h2><button type="button" class="btn ghost" data-act="close">Fechar</button></div><div class="modal-b"><div class="fg"><div class="f full"><label for="np1">Nova senha</label><input class="inp" type="password" id="np1" autocomplete="new-password" minlength="8" required><span class="hint">Pelo menos 8 caracteres.</span></div><div class="f full"><label for="np2">Repita a nova senha</label><input class="inp" type="password" id="np2" autocomplete="new-password" minlength="8" required></div></div><div id="np-err" class="err" hidden></div></div><div class="modal-f"><span></span><div class="row"><button type="button" class="btn" data-act="close">Cancelar</button><button type="submit" class="btn pri" id="np-btn">Salvar nova senha</button></div></div></form>`); break;
     case "mov-new": if(!S.readonly) movForm(b.dataset.id,b.dataset.k); break;
     case "mov-del": if(arm(b,"m"+b.dataset.id,"Confirmar")){ const m=S.movs[b.dataset.id]; if(m){ await del("movs",m.id); await adjustQty(m.itemId,-(Number(m.delta)||0)); toast("Movimentação desfeita.") } } break;
     case "ev-new": if(!S.readonly) evForm(null); break;
@@ -976,6 +985,12 @@ document.addEventListener("click",async ev=>{
 document.addEventListener("submit",ev=>{
   ev.preventDefault(); const f=ev.target;
   if(f.id==="login-form"){ doLogin(); return }
+  if(f.id==="pass-form"){ (async()=>{ const e=$("#np-err"), b=$("#np-btn"); e.hidden=true;
+    if($("#np1").value.length<8){e.textContent="Use pelo menos 8 caracteres.";e.hidden=false;return}
+    if($("#np1").value!==$("#np2").value){e.textContent="As senhas não conferem.";e.hidden=false;return}
+    b.disabled=true; const {error}=await sb.auth.updateUser({password:$("#np1").value}); b.disabled=false;
+    if(error){e.textContent=AUTH_MSG(error.message);e.hidden=false;return}
+    closeModal(); toast("Senha alterada.") })(); return }
   if(f.id==="item-form") saveItemForm(f); else if(f.id==="mov-form") saveMovForm(f); else if(f.id==="ev-form") saveEv();
 });
 let qT=null;
@@ -1014,9 +1029,18 @@ const tip=$("#tip");
 document.addEventListener("pointermove",ev=>{ const el=ev.target.closest&&ev.target.closest("[data-tip]"); if(!el){tip.hidden=true;return} tip.innerHTML=el.getAttribute("data-tip"); tip.hidden=false; const w=tip.offsetWidth,h=tip.offsetHeight; let x=ev.clientX+14,y=ev.clientY-h-10; if(x+w>innerWidth-8)x=ev.clientX-w-14; if(y<8)y=ev.clientY+16; tip.style.left=x+"px"; tip.style.top=y+"px" });
 document.addEventListener("pointerleave",()=>tip.hidden=true);
 
+/* ---------- tema claro/escuro ---------- */
+const mqDark=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
+function isDark(){ const t=document.documentElement.getAttribute("data-theme"); return t?t==="dark":!!(mqDark&&mqDark.matches) }
+function paintThemeBtns(){ const d=isDark(); document.querySelectorAll(".theme-btn").forEach(b=>{ b.querySelector(".ic-sun").style.display=d?"":"none"; b.querySelector(".ic-moon").style.display=d?"none":""; b.querySelector(".theme-lbl").textContent=d?"Tema claro":"Tema escuro"; b.setAttribute("aria-label",d?"Mudar para o tema claro":"Mudar para o tema escuro") }) }
+function toggleTheme(){ const next=isDark()?"light":"dark"; document.documentElement.setAttribute("data-theme",next); try{localStorage.setItem("itc-tema",next)}catch(e){} paintThemeBtns(); scheduleRender() }
+if(mqDark&&mqDark.addEventListener) mqDark.addEventListener("change",paintThemeBtns);
+paintThemeBtns();
+
 /* ---------- login (Supabase Auth) & boot ---------- */
 let LM="login"; // login | forgot | newpass
 const hashAtLoad=location.hash||"";
+const linkErr=(()=>{ const h=new URLSearchParams(hashAtLoad.replace(/^#/,"")), q=new URLSearchParams(location.search); const code=h.get("error_code")||q.get("error_code"), desc=h.get("error_description")||q.get("error_description"); if(!code&&!desc) return null; try{history.replaceState(null,"",location.pathname)}catch(_){} return /otp_expired|expired|invalid/i.test((code||"")+(desc||""))?"Este link de senha expirou ou já foi usado. Peça um novo em “Esqueci minha senha” e abra só o link mais recente.":"Não foi possível usar o link: "+(desc||code).replace(/\+/g," ") })();
 function setLoginMode(m,msg){
   LM=m; const t=$("#login-title"), sub=$("#login-sub"), btn=$("#login-btn"), alt=$("#login-alt");
   $("#f-email").hidden=m==="newpass"; $("#f-pw").hidden=m==="forgot"; $("#f-pw2").hidden=m!=="newpass";
@@ -1027,6 +1051,7 @@ function setLoginMode(m,msg){
   if(m==="forgot"){ t.textContent="Recuperar senha"; sub.textContent="Enviaremos um link para você criar uma nova senha."; btn.textContent="Enviar link"; alt.hidden=false; alt.textContent="Voltar para o login"; alt.dataset.k="login" }
   if(m==="newpass"){ t.textContent="Criar nova senha"; sub.textContent="Escolha uma senha com pelo menos 8 caracteres."; btn.textContent="Salvar senha e entrar"; alt.hidden=true }
 }
+function setLoginLabel(){ $("#login-btn").textContent=LM==="login"?"Entrar":LM==="forgot"?"Enviar link":"Salvar senha e entrar" }
 function showLogin(msg,mode){
   document.body.classList.add("locked"); $("#login").hidden=false; closeModal();
   setLoginMode(mode||"login");
@@ -1034,16 +1059,21 @@ function showLogin(msg,mode){
   const f=LM==="newpass"?$("#pw"):($("#em").value?$("#pw"):$("#em")); $("#pw").value=""; $("#pw2").value=""; setTimeout(()=>f.focus(),50);
 }
 function hideLogin(){ document.body.classList.remove("locked"); $("#login").hidden=true }
-const AUTH_MSG=m=>/Invalid login credentials/i.test(m)?"E-mail ou senha incorretos.":/Email not confirmed/i.test(m)?"Confirme seu e-mail antes de entrar (veja a caixa de entrada).":/rate limit|too many/i.test(m)?"Muitas tentativas. Aguarde alguns minutos.":/should be different/i.test(m)?"A nova senha precisa ser diferente da atual.":/at least|weak|short/i.test(m)?"Senha fraca: use pelo menos 8 caracteres.":m;
+const AUTH_MSG=m=>/Invalid login credentials/i.test(m)?"E-mail ou senha incorretos.":/Email not confirmed/i.test(m)?"Confirme seu e-mail antes de entrar (veja a caixa de entrada).":/email rate limit/i.test(m)?"O limite de e-mails do Supabase foi atingido (no servidor de e-mail padrão são poucos por hora). Tente mais tarde ou peça ao administrador para trocar sua senha.":/sending.*email|smtp|recovery email/i.test(m)?"O Supabase não conseguiu enviar o e-mail. É preciso configurar um servidor de e-mail (SMTP) no Supabase. Detalhe: "+m:/rate limit|too many|security purposes/i.test(m)?"Muitas tentativas seguidas. Aguarde um minuto e tente de novo.":/should be different/i.test(m)?"A nova senha precisa ser diferente da atual.":/at least|weak|short/i.test(m)?"Senha fraca: use pelo menos 8 caracteres.":m;
 async function doLogin(){
-  const btn=$("#login-btn"), e=$("#login-err"), label=btn.textContent; btn.disabled=true; btn.textContent="Aguarde…"; e.hidden=true; $("#login-ok").hidden=true;
+  const btn=$("#login-btn"), e=$("#login-err"), mode0=LM; btn.disabled=true; btn.textContent="Aguarde…"; e.hidden=true; $("#login-ok").hidden=true;
   try{
     if(LM==="login"){
       const {error}=await sb.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
       if(error) throw error; $("#pw").value=""; await start(); if(Q.length) flush();
     } else if(LM==="forgot"){
-      const {error}=await sb.auth.resetPasswordForEmail($("#em").value.trim(),{redirectTo:location.origin+location.pathname});
-      if(error) throw error; setLoginMode("login","Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha.");
+      const email=$("#em").value.trim();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw {message:"Digite um e-mail válido."};
+      if(Date.now()<(doLogin._next||0)) throw {message:`Aguarde ${Math.ceil((doLogin._next-Date.now())/1000)} s para pedir outro link.`};
+      const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+      if(error){ console.error("[Supabase] resetPasswordForEmail:",error); throw error }
+      doLogin._next=Date.now()+60000;
+      setLoginMode("login",`Pedido enviado para ${email}. Confira a caixa de entrada e o spam nos próximos minutos e abra o link neste mesmo endereço. Se o e-mail não chegar, peça ao administrador para trocar sua senha pelo Supabase.`);
     } else {
       if($("#pw").value.length<8) throw {message:"Senha fraca: use pelo menos 8 caracteres."};
       if($("#pw").value!==$("#pw2").value) throw {message:"As senhas não conferem."};
@@ -1051,14 +1081,14 @@ async function doLogin(){
       if(error) throw error; try{history.replaceState(null,"",location.pathname)}catch(_){}
       toast("Senha definida."); await start();
     }
-  }catch(err){ e.textContent=AUTH_MSG(err.message||"Não foi possível concluir."); e.hidden=false }
-  finally{ btn.disabled=false; btn.textContent=label }
+  }catch(err){ e.textContent=AUTH_MSG(err.message||"Não foi possível concluir."); e.hidden=false; if(err&&err.status) console.error("[Supabase]",err) }
+  finally{ btn.disabled=false; if(LM===mode0) setLoginLabel() }
 }
 async function start(){
   if(!sb){ hideLogin(); S.mode="offline"; S.offMsg=window.supabase?"Configure o Supabase no arquivo config.js (URL do projeto e chave anon/publishable).":"Não foi possível carregar a biblioteca do Supabase. Verifique a internet."; render(); return }
   S.mode="loading";
   const {data:{session}}=await sb.auth.getSession();
-  if(!session){ showLogin(); return }
+  if(!session){ if(linkErr){ showLogin(null,"forgot"); $("#login-err").textContent=linkErr; $("#login-err").hidden=false } else showLogin(); return }
   if(/type=(recovery|invite)/.test(hashAtLoad)&&!start._pw){ start._pw=true; showLogin(null,"newpass"); return }
   try{
     const data=await loadAll();
